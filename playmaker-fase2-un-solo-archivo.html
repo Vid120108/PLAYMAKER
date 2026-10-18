@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PLAYMAKER</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Barlow:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d1511;--bg2:#16211b;--line:#2a3a31;--tx:#eef3ee;--mut:#8fa396;--lime:#c8ff2e;--red:#ff5a4d;
+--d:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;--b:Barlow,system-ui,sans-serif;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:400 16px/1.5 var(--b)}
+button,input{font:inherit;color:inherit}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:var(--bg);border-bottom:1px solid var(--line)}
+.logo{font:900 26px/1 var(--d);letter-spacing:.04em;cursor:pointer;background:none;border:0;padding:0}
+.logo i{font-style:normal;color:var(--lime)}
+.score{display:flex;gap:14px;font:800 22px/1 var(--d)}
+.score small{display:block;font:600 11px/1 var(--b);color:var(--mut);margin-bottom:3px}
+.w{color:var(--lime)}.l{color:var(--red)}
+main{max-width:880px;margin:0 auto;padding:22px 18px 48px}
+.hero{padding:26px 0 18px}
+.hero h1{font:900 clamp(56px,16vw,120px)/.85 var(--d);margin:0;letter-spacing:.01em}
+.hero h1 span{color:var(--lime)}
+.hero p{color:var(--mut);margin:12px 0 0;max-width:46ch}
+.demo{border:1px dashed var(--mut);color:var(--mut);padding:8px 12px;border-radius:8px;font-size:13px;margin:6px 0 18px}
+h2{font:800 24px/1.1 var(--d);margin:22px 0 12px;letter-spacing:.03em}
+.cards{display:grid;gap:12px}
+@media(min-width:720px){.cards{grid-template-columns:repeat(3,1fr)}}
+.card{text-align:left;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px;cursor:pointer;display:flex;flex-direction:column;gap:8px;min-height:200px}
+.card:hover:not(:disabled){border-color:var(--lime)}
+.card:disabled{cursor:default;opacity:.7}
+.card h3{font:900 34px/.95 var(--d);margin:0}
+.card p{margin:0;color:var(--mut);font-size:14px;flex:1}
+.streak{font:800 20px/1 var(--d);color:var(--lime)}
+.tag{font-size:13px;color:var(--mut)}
+.back{background:none;border:0;color:var(--mut);cursor:pointer;padding:6px 0;margin-bottom:8px}
+.grp{margin:16px 0}
+.grp b{display:block;font-weight:600;margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--bg2);border-radius:999px;padding:9px 16px;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--lime);color:#10170a;border-color:var(--lime);font-weight:600}
+.btn{background:var(--lime);color:#10170a;border:0;border-radius:10px;padding:13px 22px;font-weight:600;cursor:pointer}
+.btn.alt{background:none;color:var(--tx);border:1px solid var(--line)}
+.btn:focus-visible,.chip:focus-visible,.card:focus-visible,input:focus-visible,.logo:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.clues{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.clues span{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-weight:600}
+.f{margin:10px 0}
+.f label{display:block;font-size:13px;color:var(--mut);margin-bottom:4px}
+.f input{width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.f input.ok{border-color:var(--lime);color:var(--lime)}
+.f input.bad{border-color:var(--red)}
+.pitch{display:grid;gap:10px;background:linear-gradient(var(--bg2),#12261a);border:1px solid var(--line);border-radius:14px;padding:14px}
+.line{display:grid;gap:8px;grid-template-columns:repeat(var(--n),1fr)}
+.line .f{margin:0}
+.line label{font-size:11px}
+.line input{padding:9px 6px;font-size:14px;text-align:center}
+.msg{margin-top:16px;padding:14px;border-radius:10px;font-weight:600}
+.msg.win{background:rgba(200,255,46,.12);color:var(--lime)}
+.msg.lose{background:rgba(255,90,77,.12);color:var(--red)}
+.lives{color:var(--mut);font-size:14px}
+@media(prefers-reduced-motion:no-preference){.card{transition:border-color .15s}}
+</style>
+</head>
+<body>
+<header>
+  <button class="logo" id="home" aria-label="Inicio">PLAY<i>MAKER</i></button>
+  <div class="score" aria-label="Marcador de hoy"><div class="w"><small>Victorias</small><span id="sw">0</span></div><div class="l"><small>Derrotas</small><span id="sl">0</span></div></div>
+</header>
+<main id="app"></main>
+<script>
+const GAMES={
+pc:{name:"Player Career",desc:"Adivina al futbolista por los clubes de su carrera.",
+ ch:{prompt:"¿Quién es este jugador?",clues:["Malmö FF","Ajax","Juventus","Inter","Barcelona","Milan","PSG","Manchester United","LA Galaxy"],fields:[{l:"Jugador",a:["zlatan","ibrahimovic","zlatan ibrahimovic"]}]}},
+tr:{name:"Trophy Room",desc:"Adivina quién ganó cada título en cada año.",
+ ch:{prompt:"¿Quién ganó cada premio?",clues:[],fields:[{l:"Balón de Oro 2008",a:["cristiano ronaldo","ronaldo","cristiano"]},{l:"Balón de Oro 2009",a:["messi","lionel messi"]},{l:"Balón de Oro 2018",a:["modric","luka modric"]},{l:"Champions League 2005 (equipo)",a:["liverpool","liverpool fc"]}]}},
+xi:{name:"All-Time XI",desc:"Completa el once histórico escribiendo cada nombre.",
+ ch:{prompt:"Once de ejemplo (se sustituirá por un once real verificado)",clues:[],lines:[1,4,2,3,1],fields:[{l:"POR",a:["casillas","iker casillas"]},{l:"LD",a:["ramos","sergio ramos"]},{l:"DFC",a:["pique","gerard pique"]},{l:"DFC",a:["puyol","carles puyol"]},{l:"LI",a:["capdevila","joan capdevila"]},{l:"MCD",a:["busquets","sergio busquets"]},{l:"MC",a:["xabi alonso","alonso"]},{l:"MC",a:["xavi","xavi hernandez"]},{l:"MC",a:["iniesta","andres iniesta"]},{l:"EXT",a:["pedro"]},{l:"DEL",a:["villa","david villa"]}]}}
+};
+//ENGINE START
+const FAILS=[["Sin fallos",0],["1",1],["3",3],["5",5],["Infinitos",null]];
+const DIFF=["Fácil","Media","Difícil"],MODES=["pc","tr","xi"],KEY="playmaker:v1",KEEP=30;
+const pad=n=>String(n).padStart(2,"0");
+const dayOf=(d=new Date())=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const norm=s=>String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim();
+const fresh=()=>({v:1,streak:{pc:0,tr:0,xi:0},days:{}});
+function load(st){try{const s=JSON.parse(st.getItem(KEY));if(s&&s.v===1&&s.streak&&s.days&&typeof s.days==="object")return s}catch(e){}return fresh()}
+function save(st,s){try{st.setItem(KEY,JSON.stringify(s));return true}catch(e){return false}}
+const rec=(s,date,k)=>(s.days[date]||{})[k]||null;
+function scoreOf(s,date){let w=0,l=0;for(const k of MODES){const r=rec(s,date,k);if(!r)continue;if(r.st==="won")w++;else if(r.st==="lost"||r.st==="gaveup")l++}return{w,l}}
+function start(s,date,k,d,f){
+ if(!MODES.includes(k)||![0,1,2].includes(d)||!FAILS[f])return{ok:false,err:"invalid"};
+ if(rec(s,date,k))return{ok:false,err:"already"};
+ (s.days[date]=s.days[date]||{})[k]={d,f,max:FAILS[f][1],fails:0,ok:{},st:"playing"};
+ Object.keys(s.days).sort().slice(0,-KEEP).forEach(x=>delete s.days[x]);
+ return{ok:true}}
+function finish(s,date,k,st){const r=rec(s,date,k);r.st=st;s.streak[k]=st==="won"?s.streak[k]+1:0;return{ok:true,st}}
+function check(s,date,k,answers,fields){
+ const r=rec(s,date,k);if(!r||r.st!=="playing")return{ok:false,err:"closed"};
+ let filled=0,wrong=0;const res={};
+ fields.forEach((f,i)=>{if(r.ok[i])return;const v=norm(answers[i]||"");if(!v)return;filled++;
+  if(f.a.some(a=>norm(a)===v)){r.ok[i]=1;res[i]="ok"}else{wrong++;res[i]="bad"}});
+ if(!filled)return{ok:false,err:"empty"};
+ if(Object.keys(r.ok).length===fields.length)return Object.assign(finish(s,date,k,"won"),{res});
+ if(!wrong)return{ok:true,st:"playing",res};
+ r.fails++;
+ if(r.max!==null&&r.fails>r.max)return Object.assign(finish(s,date,k,"lost"),{res});
+ return{ok:true,st:"playing",res}}
+function giveUp(s,date,k){const r=rec(s,date,k);if(!r||r.st!=="playing")return{ok:false,err:"closed"};return finish(s,date,k,"gaveup")}
+//ENGINE END
+let store,persist=true;
+try{localStorage.setItem("pm:t","1");localStorage.removeItem("pm:t");store=localStorage}catch(e){const m={};store={getItem:k=>m[k]||null,setItem:(k,v)=>{m[k]=v}};persist=false}
+const S=load(store),$=s=>document.querySelector(s),app=$("#app");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const best=a=>a.reduce((x,y)=>y.length>x.length?y:x);
+const cfgText=r=>DIFF[r.d]+" · "+(r.max===null?"fallos infinitos":r.max===0?"sin fallos":r.max+(r.max==1?" fallo":" fallos"));
+let curDay=dayOf(),view="home";
+const commit=()=>save(store,S);
+function score(){const c=scoreOf(S,dayOf());$("#sw").textContent=c.w;$("#sl").textContent=c.l}
+function home(){
+ view="home";curDay=dayOf();score();
+ const day=new Date().toLocaleDateString("es-ES",{weekday:"long",day:"numeric",month:"long"});
+ app.innerHTML=`<section class="hero"><h1>PLAY<span>MAKER</span></h1><p>Tres retos de fútbol al día. Uno por modalidad, el mismo para todos.</p></section>
+ <div class="demo">${persist?"Tus rachas y resultados se guardan solo en este navegador y dispositivo; no se sincronizan.":"Tu navegador bloquea el guardado: el progreso se perderá al cerrar la página."} Los retos son ejemplos sin verificar.</div>
+ <h2>Retos de hoy · ${esc(day)}</h2><div class="cards">`+MODES.map(k=>{
+  const g=GAMES[k],r=rec(S,curDay,k),n=S.streak[k];
+  const tag=!r?"Pendiente · elige dificultad y fallos":r.st==="playing"?"En curso · "+cfgText(r)+" · pulsa para continuar":(r.st==="won"?"Victoria":r.st==="lost"?"Derrota":"Rendido")+" · "+cfgText(r);
+  return `<button class="card" data-g="${k}" ${r&&r.st!=="playing"?"disabled":""}><h3>${g.name}</h3><p>${g.desc}</p>
+  <span class="streak">Racha: ${n} ${n==1?"día":"días"}</span><span class="tag">${tag}</span></button>`}).join("")+"</div>";
+ app.querySelectorAll(".card").forEach(c=>c.onclick=()=>{const k=c.dataset.g,r=rec(S,curDay,k);r?play(k,curDay):setup(k)});
+}
+function chips(name,arr,sel){return `<div class="chips" data-n="${name}">`+arr.map((x,i)=>`<button class="chip" aria-pressed="${i==sel}" data-i="${i}">${Array.isArray(x)?x[0]:x}</button>`).join("")+"</div>"}
+function setup(k){
+ view="setup";const g=GAMES[k],cfg={d:0,f:2};
+ app.innerHTML=`<button class="back" id="bk">← Volver</button><h2>${g.name}</h2>
+ <p class="lives">Solo puedes jugar una configuración de esta modalidad hoy. Al empezar no podrás cambiarla ni repetir el reto.</p>
+ <div class="grp"><b>Dificultad</b>${chips("d",DIFF,0)}</div>
+ <div class="grp"><b>Fallos permitidos</b>${chips("f",FAILS,2)}</div>
+ <div class="row"><button class="btn" id="go">Empezar reto</button></div>`;
+ $("#bk").onclick=home;
+ app.querySelectorAll(".chips").forEach(box=>box.onclick=e=>{const b=e.target.closest(".chip");if(!b)return;cfg[box.dataset.n]=+b.dataset.i;box.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c==b))});
+ $("#go").onclick=()=>{const r=start(S,dayOf(),k,cfg.d,cfg.f);if(!r.ok)return home();commit();play(k,dayOf())};
+}
+function field(f,i){return `<div class="f"><label for="i${i}">${esc(f.l)}</label><input id="i${i}" autocomplete="off" autocapitalize="off" spellcheck="false"></div>`}
+function play(k,date){
+ view="play";const g=GAMES[k],c=g.ch,r=rec(S,date,k);let body;
+ if(c.lines){let i=0;body=`<div class="pitch">`+c.lines.map(n=>`<div class="line" style="--n:${n}">`+Array.from({length:n},()=>field(c.fields[i],i++)).join("")+"</div>").join("")+"</div>"}
+ else body=c.fields.map(field).join("");
+ app.innerHTML=`<button class="back" id="bk">← Salir (el reto queda guardado)</button><h2>${g.name} · ${cfgText(r)}</h2>
+ <p>${esc(c.prompt)}</p>${c.clues.length?`<div class="clues">${c.clues.map(x=>`<span>${esc(x)}</span>`).join("")}</div>`:""}
+ ${body}<p class="lives" id="lv"></p><div class="row"><button class="btn" id="chk">Comprobar</button><button class="btn alt" id="giveup">Rendirme</button></div><p class="lives" id="hint"></p><div id="out"></div>`;
+ $("#bk").onclick=home;
+ c.fields.forEach((f,i)=>{if(r.ok[i]){const el=$("#i"+i);el.value=best(f.a);el.className="ok";el.readOnly=true}});
+ const doCheck=()=>{const ans=c.fields.map((f,i)=>$("#i"+i).value);const x=check(S,date,k,ans,c.fields);
+  if(!x.ok){$("#hint").textContent=x.err==="empty"?"Escribe al menos una respuesta antes de comprobar.":"";return}
+  commit();$("#hint").textContent="";
+  c.fields.forEach((f,i)=>{const el=$("#i"+i);if(x.res[i]==="ok"){el.className="ok";el.readOnly=true}else if(x.res[i]==="bad")el.className="bad"});
+  r.st==="playing"?lives(r):end(k,date)};
+ $("#chk").onclick=doCheck;
+ app.querySelectorAll("input").forEach(i=>i.addEventListener("keydown",e=>{if(e.key==="Enter")doCheck()}));
+ let armed=false;const gu=$("#giveup");
+ gu.onclick=()=>{if(!armed){armed=true;gu.textContent="Confirmar rendición";setTimeout(()=>{armed=false;gu.textContent="Rendirme"},4000);return}giveUp(S,date,k);commit();end(k,date)};
+ r.st==="playing"?lives(r):end(k,date);
+}
+function lives(r){$("#lv").textContent=r.max===null?"Fallos: "+r.fails+" (infinitos permitidos)":"Fallos: "+r.fails+" de "+r.max}
+function end(k,date){
+ const r=rec(S,date,k),g=GAMES[k],win=r.st==="won";score();lives(r);
+ let sol="";
+ if(!win){g.ch.fields.forEach((f,i)=>{if(!r.ok[i]){const el=$("#i"+i);el.value=best(f.a);el.className="bad"}});sol=" La solución se muestra en los campos."}
+ app.querySelectorAll("input").forEach(i=>i.readOnly=true);$("#chk").disabled=$("#giveup").disabled=true;
+ $("#out").innerHTML=`<div class="msg ${win?"win":"lose"}">${win?"¡Victoria! Tu racha sube a "+S.streak[k]+".":(r.st==="gaveup"?"Te has rendido.":"Has superado el límite de fallos.")+" Tu racha vuelve a 0."+sol}</div><div class="row"><button class="btn" id="hm">Volver al inicio</button></div>`;
+ $("#hm").onclick=home;
+}
+$("#home").onclick=home;
+const tick=()=>{if(dayOf()!==curDay){score();if(view!=="play")home()}};
+setInterval(tick,30000);document.addEventListener("visibilitychange",tick);
+home();
+</script>
+</body>
+</html>
